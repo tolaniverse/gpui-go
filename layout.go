@@ -18,6 +18,13 @@ type Command struct {
 }
 
 type hitTarget struct {
+	rect    Rect
+	focusID string
+	fn      func()
+}
+
+type focusTarget struct {
+	id   string
 	rect Rect
 	fn   func()
 }
@@ -27,6 +34,16 @@ type Scene struct {
 	Width, Height float64
 	Commands      []Command
 	hits          []hitTarget
+	focuses       []focusTarget
+}
+
+func (s Scene) hasFocus(id string) bool {
+	for _, target := range s.focuses {
+		if target.id == id {
+			return true
+		}
+	}
+	return false
 }
 
 func buildScene(root *Element, width, height float64) Scene {
@@ -44,7 +61,10 @@ func layout(scene *Scene, node *Element, bounds Rect) {
 		scene.Commands = append(scene.Commands, Command{Kind: FillRect, Bounds: bounds, Color: style.Background})
 	}
 	if node.OnClick != nil {
-		scene.hits = append(scene.hits, hitTarget{rect: bounds, fn: node.OnClick})
+		scene.hits = append(scene.hits, hitTarget{rect: bounds, focusID: node.FocusID, fn: node.OnClick})
+		if node.FocusID != "" {
+			scene.focuses = append(scene.focuses, focusTarget{id: node.FocusID, rect: bounds, fn: node.OnClick})
+		}
 	}
 	inner := Rect{X: bounds.X + style.Padding, Y: bounds.Y + style.Padding,
 		W: max(0, bounds.W-2*style.Padding), H: max(0, bounds.H-2*style.Padding)}
