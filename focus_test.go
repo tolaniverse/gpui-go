@@ -40,6 +40,10 @@ func TestFocusTraversalAndActivation(t *testing.T) {
 			t.Fatalf("key %+v: focus = %q, want %q", step.key, app.FocusID(), step.want)
 		}
 		app.Frame(100, 60)
+		commands := app.Frame(100, 60).Commands
+		if commands[len(commands)-1].Kind != FocusRect {
+			t.Fatal("focused element has no focus indicator")
+		}
 	}
 	if !app.HandleKey(KeyEvent{Code: KeySpace}) || len(view.activated) != 1 || view.activated[0] != "second" {
 		t.Fatalf("space activated %+v", view.activated)

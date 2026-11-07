@@ -81,6 +81,13 @@ func (a *App) Frame(width, height float64) Scene {
 		if a.focusID != "" && !a.scene.hasFocus(a.focusID) {
 			a.focusID = ""
 		}
+		for _, target := range a.scene.focuses {
+			if target.id == a.focusID {
+				a.scene.Commands = append(a.scene.Commands, Command{Kind: FocusRect, Bounds: target.rect,
+					Color: color.RGBA{R: 175, G: 215, B: 255, A: 255}})
+				break
+			}
+		}
 		a.dirty = false
 	}
 	return a.scene

@@ -7,6 +7,7 @@ type CommandKind uint8
 const (
 	FillRect CommandKind = iota
 	DrawText
+	FocusRect
 )
 
 type Command struct {
