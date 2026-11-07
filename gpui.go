@@ -118,7 +118,8 @@ func (a *App) FocusID() string { return a.focusID }
 type KeyCode uint8
 
 const (
-	KeyTab KeyCode = iota
+	KeyUnknown KeyCode = iota
+	KeyTab
 	KeyEnter
 	KeySpace
 )
