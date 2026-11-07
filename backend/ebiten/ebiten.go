@@ -40,6 +40,15 @@ func Run(app *gpui.App, title string, width, height int) error {
 
 func (g *game) Update() error {
 	g.app.Frame(float64(g.width), float64(g.height))
+	if inpututil.IsKeyJustPressed(engine.KeyTab) {
+		g.app.HandleKey(gpui.KeyEvent{Code: gpui.KeyTab, Shift: engine.IsKeyPressed(engine.KeyShift)})
+	}
+	if inpututil.IsKeyJustPressed(engine.KeyEnter) || inpututil.IsKeyJustPressed(engine.KeyNumpadEnter) {
+		g.app.HandleKey(gpui.KeyEvent{Code: gpui.KeyEnter})
+	}
+	if inpututil.IsKeyJustPressed(engine.KeySpace) {
+		g.app.HandleKey(gpui.KeyEvent{Code: gpui.KeySpace})
+	}
 	if inpututil.IsMouseButtonJustPressed(engine.MouseButtonLeft) {
 		x, y := engine.CursorPosition()
 		g.app.Click(float64(x), float64(y))
@@ -60,6 +69,12 @@ func (g *game) Draw(screen *engine.Image) {
 			options.GeoM.Translate(command.Bounds.X, command.Bounds.Y)
 			options.ColorScale.ScaleWithColor(command.Color)
 			text.Draw(screen, command.Text, face, options)
+		case gpui.FocusRect:
+			bounds := command.Bounds
+			if bounds.W > 4 && bounds.H > 4 {
+				vector.StrokeRect(screen, float32(bounds.X+2), float32(bounds.Y+2),
+					float32(bounds.W-4), float32(bounds.H-4), 2, command.Color, true)
+			}
 		}
 	}
 }
